@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Dumbbell, History, User } from "lucide-react-native";
+import { Dumbbell, User } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -29,15 +29,6 @@ export default function TabLayout() {
           title: "Workouts",
           tabBarIcon: ({ size, color }) => (
             <Dumbbell size={size} color={color} strokeWidth={2} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="history"
-        options={{
-          title: "History",
-          tabBarIcon: ({ size, color }) => (
-            <History size={size} color={color} strokeWidth={2} />
           ),
         }}
       />
