@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -28,11 +28,7 @@ export default function ExerciseDetailScreen() {
   const workoutId = params?.[0];
   const exerciseId = params?.[1];
 
-  useEffect(() => {
-    loadExercise();
-  }, [workoutId, exerciseId]);
-
-  const loadExercise = async () => {
+  const loadExercise = useCallback(async () => {
     if (!workoutId || !exerciseId) return;
 
     const workouts = await StorageService.getWorkouts();
@@ -43,7 +39,11 @@ export default function ExerciseDetailScreen() {
 
     setWorkout(foundWorkout || null);
     setExercise(foundExercise || null);
-  };
+  }, [workoutId, exerciseId]);
+
+  useEffect(() => {
+    loadExercise();
+  }, [loadExercise]);
 
   const handleAddSet = async () => {
     const weightNum = parseFloat(weight);

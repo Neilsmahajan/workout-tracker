@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,10 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, Link } from "expo-router";
 import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import type { Workout, Exercise } from "@/types/workout";
-import { Link } from "expo-router";
 
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,15 +22,15 @@ export default function WorkoutDetailScreen() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
 
-  useEffect(() => {
-    loadWorkout();
-  }, [id]);
-
-  const loadWorkout = async () => {
+  const loadWorkout = useCallback(async () => {
     const workouts = await StorageService.getWorkouts();
     const foundWorkout = workouts.find((w) => w.id === id);
     setWorkout(foundWorkout || null);
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadWorkout();
+  }, [loadWorkout]);
 
   const handleAddExercise = async () => {
     if (!newExerciseName.trim() || !workout) return;
