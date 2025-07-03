@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { User, Trash2, Download } from "lucide-react-native";
+import { User, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
 
@@ -24,17 +24,6 @@ export default function ProfileScreen() {
     );
   };
 
-  const handleExportData = async () => {
-    const workouts = await StorageService.getWorkouts();
-    const dataString = JSON.stringify(workouts, null, 2);
-
-    showAlert(
-      "Export Data",
-      `Your workout data is ready to export:\n\n${dataString.substring(0, 200)}...`,
-      [{ text: "OK", style: "default" }],
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -52,21 +41,6 @@ export default function ProfileScreen() {
 
         <View style={styles.settingsSection}>
           <Text style={styles.sectionTitle}>Data Management</Text>
-
-          <TouchableOpacity
-            style={styles.settingItem}
-            onPress={handleExportData}
-          >
-            <View style={styles.settingIcon}>
-              <Download size={20} color="#007AFF" strokeWidth={2} />
-            </View>
-            <View style={styles.settingContent}>
-              <Text style={styles.settingLabel}>Export Data</Text>
-              <Text style={styles.settingDescription}>
-                Export your workout data as JSON
-              </Text>
-            </View>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.settingItem}
