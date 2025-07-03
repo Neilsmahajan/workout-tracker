@@ -11,12 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {
-  ArrowLeft,
-  Plus,
-  CreditCard as Edit3,
-  Trash2,
-} from "lucide-react-native";
+import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import type { Workout, Exercise, WorkoutSet } from "@/types/workout";
 
@@ -195,25 +190,27 @@ export default function ExerciseDetailScreen() {
             <Text style={styles.sectionTitle}>Sets</Text>
             {exercise.sets.map((set, index) => (
               <View key={set.id} style={styles.setCard}>
-                <View style={styles.setInfo}>
-                  <Text style={styles.setNumber}>Set {index + 1}</Text>
-                  <Text style={styles.setDetails}>
-                    {set.weight} lbs × {set.reps} reps
-                  </Text>
-                </View>
-                <View style={styles.setActions}>
+                <View style={styles.setRow}>
                   <TouchableOpacity
-                    style={styles.actionButton}
+                    style={styles.setContent}
                     onPress={() => openEditModal(set)}
                   >
-                    <Edit3 size={16} color="#007AFF" strokeWidth={2} />
+                    <View style={styles.setInfo}>
+                      <Text style={styles.setNumber}>Set {index + 1}</Text>
+                      <Text style={styles.setDetails}>
+                        {set.weight} lbs × {set.reps} reps
+                      </Text>
+                    </View>
+                    <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteSet(set.id)}
-                  >
-                    <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
-                  </TouchableOpacity>
+                  <View style={styles.setActions}>
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleDeleteSet(set.id)}
+                    >
+                      <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             ))}
@@ -335,16 +332,22 @@ const styles = StyleSheet.create({
   setCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
-    padding: 16,
     marginBottom: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+  },
+  setRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  setContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    flex: 1,
   },
   setInfo: {
     flex: 1,
@@ -361,7 +364,8 @@ const styles = StyleSheet.create({
   },
   setActions: {
     flexDirection: "row",
-    gap: 8,
+    alignItems: "center",
+    paddingRight: 16,
   },
   actionButton: {
     padding: 8,

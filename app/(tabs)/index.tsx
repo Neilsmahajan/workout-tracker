@@ -105,30 +105,34 @@ export default function WorkoutsScreen() {
         ) : (
           workouts.map((workout) => (
             <View key={workout.id} style={styles.workoutCard}>
-              <Link href={`/workout/${workout.id}`} asChild>
-                <TouchableOpacity style={styles.workoutContent}>
-                  <View style={styles.workoutInfo}>
-                    <Text style={styles.workoutName}>{workout.name}</Text>
-                    <View style={styles.workoutMeta}>
-                      <Calendar size={14} color="#8E8E93" strokeWidth={2} />
-                      <Text style={styles.workoutDate}>
-                        {formatDate(workout.date)}
-                      </Text>
-                      <Text style={styles.exerciseCount}>
-                        {workout.exercises.length} exercise
-                        {workout.exercises.length !== 1 ? "s" : ""}
-                      </Text>
+              <View style={styles.workoutRow}>
+                <Link href={`/workout/${workout.id}`} asChild>
+                  <TouchableOpacity style={styles.workoutContent}>
+                    <View style={styles.workoutInfo}>
+                      <Text style={styles.workoutName}>{workout.name}</Text>
+                      <View style={styles.workoutMeta}>
+                        <Calendar size={14} color="#8E8E93" strokeWidth={2} />
+                        <Text style={styles.workoutDate}>
+                          {formatDate(workout.date)}
+                        </Text>
+                        <Text style={styles.exerciseCount}>
+                          {workout.exercises.length} exercise
+                          {workout.exercises.length !== 1 ? "s" : ""}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                  <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
-                </TouchableOpacity>
-              </Link>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDeleteWorkout(workout.id)}
-              >
-                <Trash2 size={18} color="#FF3B30" strokeWidth={2} />
-              </TouchableOpacity>
+                    <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
+                  </TouchableOpacity>
+                </Link>
+                <View style={styles.workoutActions}>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => handleDeleteWorkout(workout.id)}
+                  >
+                    <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           ))
         )}
@@ -227,10 +231,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
+  workoutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   workoutContent: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
+    flex: 1,
   },
   workoutInfo: {
     flex: 1,
@@ -254,11 +263,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#8E8E93",
   },
-  deleteButton: {
-    position: "absolute",
-    top: 16,
-    right: 16,
-    padding: 4,
+  workoutActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: 16,
+    marginLeft: 8,
+  },
+  actionButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#F2F2F7",
   },
   modalContainer: {
     flex: 1,
