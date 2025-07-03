@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
-import type { Workout } from "@/types/workout";
+import type { Workout, Exercise } from "@/types/workout";
 
 const WORKOUTS_KEY = "workouts";
 
@@ -81,6 +81,30 @@ export const StorageService = {
       await this.saveWorkouts(filteredWorkouts);
     } catch (error) {
       console.error("Error deleting workout:", error);
+    }
+  },
+
+  async reorderWorkouts(reorderedWorkouts: Workout[]): Promise<void> {
+    try {
+      await this.saveWorkouts(reorderedWorkouts);
+    } catch (error) {
+      console.error("Error reordering workouts:", error);
+    }
+  },
+
+  async reorderExercises(
+    workoutId: string,
+    reorderedExercises: Exercise[],
+  ): Promise<void> {
+    try {
+      const workouts = await this.getWorkouts();
+      const workoutIndex = workouts.findIndex((w) => w.id === workoutId);
+      if (workoutIndex !== -1 && workouts[workoutIndex]) {
+        workouts[workoutIndex].exercises = reorderedExercises;
+        await this.saveWorkouts(workouts);
+      }
+    } catch (error) {
+      console.error("Error reordering exercises:", error);
     }
   },
 };

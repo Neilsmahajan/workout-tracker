@@ -10,7 +10,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
-import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
+import {
+  ArrowLeft,
+  Plus,
+  ChevronRight,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  MoreVertical,
+} from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
 import type { Workout, Exercise } from "@/types/workout";
@@ -21,6 +29,7 @@ export default function WorkoutDetailScreen() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
+  const [isReorderMode, setIsReorderMode] = useState(false);
 
   const loadWorkout = useCallback(async () => {
     const workouts = await StorageService.getWorkouts();
@@ -75,6 +84,50 @@ export default function WorkoutDetailScreen() {
     );
   };
 
+  const moveExerciseUp = async (index: number) => {
+    if (
+      index > 0 &&
+      workout &&
+      workout.exercises[index] &&
+      workout.exercises[index - 1]
+    ) {
+      const newExercises = [...workout.exercises];
+      const temp = newExercises[index]!;
+      newExercises[index] = newExercises[index - 1]!;
+      newExercises[index - 1] = temp;
+
+      const updatedWorkout = {
+        ...workout,
+        exercises: newExercises,
+      };
+
+      setWorkout(updatedWorkout);
+      await StorageService.reorderExercises(workout.id, newExercises);
+    }
+  };
+
+  const moveExerciseDown = async (index: number) => {
+    if (
+      index < workout!.exercises.length - 1 &&
+      workout &&
+      workout.exercises[index] &&
+      workout.exercises[index + 1]
+    ) {
+      const newExercises = [...workout.exercises];
+      const temp = newExercises[index]!;
+      newExercises[index] = newExercises[index + 1]!;
+      newExercises[index + 1] = temp;
+
+      const updatedWorkout = {
+        ...workout,
+        exercises: newExercises,
+      };
+
+      setWorkout(updatedWorkout);
+      await StorageService.reorderExercises(workout.id, newExercises);
+    }
+  };
+
   if (!workout) {
     return (
       <SafeAreaView style={styles.container}>
@@ -92,12 +145,20 @@ export default function WorkoutDetailScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {workout.name}
         </Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowAddModal(true)}
-        >
-          <Plus size={24} color="#FFFFFF" strokeWidth={2} />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.reorderButton}
+            onPress={() => setIsReorderMode(!isReorderMode)}
+          >
+            <MoreVertical size={20} color="#007AFF" strokeWidth={2} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setShowAddModal(true)}
+          >
+            <Plus size={24} color="#FFFFFF" strokeWidth={2} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -109,7 +170,7 @@ export default function WorkoutDetailScreen() {
             </Text>
           </View>
         ) : (
-          workout.exercises.map((exercise) => (
+          workout.exercises.map((exercise, index) => (
             <View key={exercise.id} style={styles.exerciseCard}>
               <View style={styles.exerciseRow}>
                 <Link href={`/exercise/${workout.id}/${exercise.id}`} asChild>
@@ -125,12 +186,37 @@ export default function WorkoutDetailScreen() {
                   </TouchableOpacity>
                 </Link>
                 <View style={styles.exerciseActions}>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteExercise(exercise.id)}
-                  >
-                    <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
-                  </TouchableOpacity>
+                  {!isReorderMode ? (
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleDeleteExercise(exercise.id)}
+                    >
+                      <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
+                    </TouchableOpacity>
+                  ) : (
+                    <>
+                      {index > 0 && (
+                        <TouchableOpacity
+                          style={styles.actionButton}
+                          onPress={() => moveExerciseUp(index)}
+                        >
+                          <ArrowUp size={16} color="#007AFF" strokeWidth={2} />
+                        </TouchableOpacity>
+                      )}
+                      {index < workout.exercises.length - 1 && (
+                        <TouchableOpacity
+                          style={styles.actionButton}
+                          onPress={() => moveExerciseDown(index)}
+                        >
+                          <ArrowDown
+                            size={16}
+                            color="#007AFF"
+                            strokeWidth={2}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </>
+                  )}
                 </View>
               </View>
             </View>
@@ -199,6 +285,19 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  reorderButton: {
+    backgroundColor: "#F2F2F7",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
   },
