@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
+import { showAlert } from "@/utils/alert";
 import type { Workout, Exercise, WorkoutSet } from "@/types/workout";
 
 export default function ExerciseDetailScreen() {
@@ -108,7 +108,7 @@ export default function ExerciseDetailScreen() {
   };
 
   const handleDeleteSet = (setId: string) => {
-    Alert.alert("Delete Set", "Are you sure you want to delete this set?", [
+    showAlert("Delete Set", "Are you sure you want to delete this set?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",

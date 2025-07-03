@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
 import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
+import { showAlert } from "@/utils/alert";
 import type { Workout, Exercise } from "@/types/workout";
 
 export default function WorkoutDetailScreen() {
@@ -53,7 +53,7 @@ export default function WorkoutDetailScreen() {
   };
 
   const handleDeleteExercise = (exerciseId: string) => {
-    Alert.alert(
+    showAlert(
       "Delete Exercise",
       "Are you sure you want to delete this exercise?",
       [

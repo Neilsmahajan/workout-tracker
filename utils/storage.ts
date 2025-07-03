@@ -1,12 +1,41 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 import type { Workout } from "@/types/workout";
 
 const WORKOUTS_KEY = "workouts";
 
+// Web-compatible storage wrapper
+const storage = {
+  async getItem(key: string): Promise<string | null> {
+    if (Platform.OS === "web") {
+      try {
+        return localStorage.getItem(key);
+      } catch (error) {
+        console.error("Error accessing localStorage:", error);
+        return null;
+      }
+    }
+    return AsyncStorage.getItem(key);
+  },
+
+  async setItem(key: string, value: string): Promise<void> {
+    if (Platform.OS === "web") {
+      try {
+        localStorage.setItem(key, value);
+        return;
+      } catch (error) {
+        console.error("Error setting localStorage:", error);
+        return;
+      }
+    }
+    return AsyncStorage.setItem(key, value);
+  },
+};
+
 export const StorageService = {
   async getWorkouts(): Promise<Workout[]> {
     try {
-      const workoutsJson = await AsyncStorage.getItem(WORKOUTS_KEY);
+      const workoutsJson = await storage.getItem(WORKOUTS_KEY);
       return workoutsJson ? JSON.parse(workoutsJson) : [];
     } catch (error) {
       console.error("Error loading workouts:", error);
@@ -16,7 +45,7 @@ export const StorageService = {
 
   async saveWorkouts(workouts: Workout[]): Promise<void> {
     try {
-      await AsyncStorage.setItem(WORKOUTS_KEY, JSON.stringify(workouts));
+      await storage.setItem(WORKOUTS_KEY, JSON.stringify(workouts));
     } catch (error) {
       console.error("Error saving workouts:", error);
     }

@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Alert,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Plus, Calendar, ChevronRight, Trash2 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
+import { showAlert } from "@/utils/alert";
 import type { Workout } from "@/types/workout";
 import { Link } from "expo-router";
 import { DumbbellIcon } from "@/components/DumbbellIcon";
@@ -59,7 +59,7 @@ export default function WorkoutsScreen() {
   };
 
   const handleDeleteWorkout = (workoutId: string) => {
-    Alert.alert(
+    showAlert(
       "Delete Workout",
       "Are you sure you want to delete this workout?",
       [

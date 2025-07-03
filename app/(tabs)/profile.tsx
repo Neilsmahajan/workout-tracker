@@ -1,12 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Trash2, Download } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
+import { showAlert } from "@/utils/alert";
 
 export default function ProfileScreen() {
   const handleClearData = () => {
-    Alert.alert(
+    showAlert(
       "Clear All Data",
       "Are you sure you want to delete all your workouts? This action cannot be undone.",
       [
@@ -16,7 +17,7 @@ export default function ProfileScreen() {
           style: "destructive",
           onPress: async () => {
             await StorageService.saveWorkouts([]);
-            Alert.alert("Success", "All workout data has been cleared.");
+            showAlert("Success", "All workout data has been cleared.");
           },
         },
       ],
@@ -27,7 +28,7 @@ export default function ProfileScreen() {
     const workouts = await StorageService.getWorkouts();
     const dataString = JSON.stringify(workouts, null, 2);
 
-    Alert.alert(
+    showAlert(
       "Export Data",
       `Your workout data is ready to export:\n\n${dataString.substring(0, 200)}...`,
       [{ text: "OK", style: "default" }],
