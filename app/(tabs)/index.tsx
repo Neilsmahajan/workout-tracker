@@ -95,11 +95,20 @@ export default function WorkoutsScreen() {
     return date.toLocaleDateString();
   };
 
-  const renderWorkoutItem = ({ item: workout, drag, isActive }: RenderItemParams<Workout>) => {
+  const renderWorkoutItem = ({
+    item: workout,
+    drag,
+    isActive,
+  }: RenderItemParams<Workout>) => {
     return (
       <ScaleDecorator>
-        <View style={[styles.workoutCard, isActive && styles.workoutCardDragging]}>
+        <View
+          style={[styles.workoutCard, isActive && styles.workoutCardDragging]}
+        >
           <View style={styles.workoutRow}>
+            <TouchableOpacity style={styles.dragHandle} onLongPress={drag}>
+              <GripVertical size={16} color="#C7C7CC" strokeWidth={2} />
+            </TouchableOpacity>
             <Link href={`/workout/${workout.id}`} asChild>
               <TouchableOpacity style={styles.workoutContent}>
                 <View style={styles.workoutInfo}>
@@ -119,12 +128,6 @@ export default function WorkoutsScreen() {
               </TouchableOpacity>
             </Link>
             <View style={styles.workoutActions}>
-              <TouchableOpacity
-                style={styles.dragHandle}
-                onLongPress={drag}
-              >
-                <GripVertical size={16} color="#C7C7CC" strokeWidth={2} />
-              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => handleDeleteWorkout(workout.id)}
@@ -358,6 +361,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     backgroundColor: "#F2F2F7",
+    marginLeft: 16,
     marginRight: 8,
   },
 });

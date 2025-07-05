@@ -94,13 +94,22 @@ export default function WorkoutDetailScreen() {
     await StorageService.reorderExercises(workout.id, data);
   };
 
-  const renderExerciseItem = ({ item: exercise, drag, isActive }: RenderItemParams<Exercise>) => {
+  const renderExerciseItem = ({
+    item: exercise,
+    drag,
+    isActive,
+  }: RenderItemParams<Exercise>) => {
     if (!workout) return null;
 
     return (
       <ScaleDecorator>
-        <View style={[styles.exerciseCard, isActive && styles.exerciseCardDragging]}>
+        <View
+          style={[styles.exerciseCard, isActive && styles.exerciseCardDragging]}
+        >
           <View style={styles.exerciseRow}>
+            <TouchableOpacity style={styles.dragHandle} onLongPress={drag}>
+              <GripVertical size={16} color="#C7C7CC" strokeWidth={2} />
+            </TouchableOpacity>
             <Link href={`/exercise/${workout.id}/${exercise.id}`} asChild>
               <TouchableOpacity style={styles.exerciseContent}>
                 <View style={styles.exerciseInfo}>
@@ -114,12 +123,6 @@ export default function WorkoutDetailScreen() {
               </TouchableOpacity>
             </Link>
             <View style={styles.exerciseActions}>
-              <TouchableOpacity
-                style={styles.dragHandle}
-                onLongPress={drag}
-              >
-                <GripVertical size={16} color="#C7C7CC" strokeWidth={2} />
-              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => handleDeleteExercise(exercise.id)}
@@ -363,6 +366,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     backgroundColor: "#F2F2F7",
+    marginLeft: 16,
     marginRight: 8,
   },
 });
