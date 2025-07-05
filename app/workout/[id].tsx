@@ -3,21 +3,22 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   TextInput,
   Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
+import DraggableFlatList, {
+  ScaleDecorator,
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 import {
   ArrowLeft,
   Plus,
   ChevronRight,
   Trash2,
-  ArrowUp,
-  ArrowDown,
-  MoreVertical,
+  GripVertical,
 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
@@ -29,7 +30,6 @@ export default function WorkoutDetailScreen() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
-  const [isReorderMode, setIsReorderMode] = useState(false);
 
   const loadWorkout = useCallback(async () => {
     const workouts = await StorageService.getWorkouts();
@@ -84,48 +84,53 @@ export default function WorkoutDetailScreen() {
     );
   };
 
-  const moveExerciseUp = async (index: number) => {
-    if (
-      index > 0 &&
-      workout &&
-      workout.exercises[index] &&
-      workout.exercises[index - 1]
-    ) {
-      const newExercises = [...workout.exercises];
-      const temp = newExercises[index]!;
-      newExercises[index] = newExercises[index - 1]!;
-      newExercises[index - 1] = temp;
-
-      const updatedWorkout = {
-        ...workout,
-        exercises: newExercises,
-      };
-
-      setWorkout(updatedWorkout);
-      await StorageService.reorderExercises(workout.id, newExercises);
-    }
+  const handleDragEnd = async (data: Exercise[]) => {
+    if (!workout) return;
+    const updatedWorkout = {
+      ...workout,
+      exercises: data,
+    };
+    setWorkout(updatedWorkout);
+    await StorageService.reorderExercises(workout.id, data);
   };
 
-  const moveExerciseDown = async (index: number) => {
-    if (
-      index < workout!.exercises.length - 1 &&
-      workout &&
-      workout.exercises[index] &&
-      workout.exercises[index + 1]
-    ) {
-      const newExercises = [...workout.exercises];
-      const temp = newExercises[index]!;
-      newExercises[index] = newExercises[index + 1]!;
-      newExercises[index + 1] = temp;
+  const renderExerciseItem = ({ item: exercise, drag, isActive }: RenderItemParams<Exercise>) => {
+    if (!workout) return null;
 
-      const updatedWorkout = {
-        ...workout,
-        exercises: newExercises,
-      };
-
-      setWorkout(updatedWorkout);
-      await StorageService.reorderExercises(workout.id, newExercises);
-    }
+    return (
+      <ScaleDecorator>
+        <View style={[styles.exerciseCard, isActive && styles.exerciseCardDragging]}>
+          <View style={styles.exerciseRow}>
+            <Link href={`/exercise/${workout.id}/${exercise.id}`} asChild>
+              <TouchableOpacity style={styles.exerciseContent}>
+                <View style={styles.exerciseInfo}>
+                  <Text style={styles.exerciseName}>{exercise.name}</Text>
+                  <Text style={styles.setCount}>
+                    {exercise.sets.length} set
+                    {exercise.sets.length !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+                <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
+              </TouchableOpacity>
+            </Link>
+            <View style={styles.exerciseActions}>
+              <TouchableOpacity
+                style={styles.dragHandle}
+                onLongPress={drag}
+              >
+                <GripVertical size={16} color="#C7C7CC" strokeWidth={2} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => handleDeleteExercise(exercise.id)}
+              >
+                <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScaleDecorator>
+    );
   };
 
   if (!workout) {
@@ -145,23 +150,15 @@ export default function WorkoutDetailScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {workout.name}
         </Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.reorderButton}
-            onPress={() => setIsReorderMode(!isReorderMode)}
-          >
-            <MoreVertical size={20} color="#007AFF" strokeWidth={2} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setShowAddModal(true)}
-          >
-            <Plus size={24} color="#FFFFFF" strokeWidth={2} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setShowAddModal(true)}
+        >
+          <Plus size={24} color="#FFFFFF" strokeWidth={2} />
+        </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <View style={styles.content}>
         {workout.exercises.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyTitle}>No exercises yet</Text>
@@ -170,59 +167,14 @@ export default function WorkoutDetailScreen() {
             </Text>
           </View>
         ) : (
-          workout.exercises.map((exercise, index) => (
-            <View key={exercise.id} style={styles.exerciseCard}>
-              <View style={styles.exerciseRow}>
-                <Link href={`/exercise/${workout.id}/${exercise.id}`} asChild>
-                  <TouchableOpacity style={styles.exerciseContent}>
-                    <View style={styles.exerciseInfo}>
-                      <Text style={styles.exerciseName}>{exercise.name}</Text>
-                      <Text style={styles.setCount}>
-                        {exercise.sets.length} set
-                        {exercise.sets.length !== 1 ? "s" : ""}
-                      </Text>
-                    </View>
-                    <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
-                  </TouchableOpacity>
-                </Link>
-                <View style={styles.exerciseActions}>
-                  {!isReorderMode ? (
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleDeleteExercise(exercise.id)}
-                    >
-                      <Trash2 size={16} color="#FF3B30" strokeWidth={2} />
-                    </TouchableOpacity>
-                  ) : (
-                    <>
-                      {index > 0 && (
-                        <TouchableOpacity
-                          style={styles.actionButton}
-                          onPress={() => moveExerciseUp(index)}
-                        >
-                          <ArrowUp size={16} color="#007AFF" strokeWidth={2} />
-                        </TouchableOpacity>
-                      )}
-                      {index < workout.exercises.length - 1 && (
-                        <TouchableOpacity
-                          style={styles.actionButton}
-                          onPress={() => moveExerciseDown(index)}
-                        >
-                          <ArrowDown
-                            size={16}
-                            color="#007AFF"
-                            strokeWidth={2}
-                          />
-                        </TouchableOpacity>
-                      )}
-                    </>
-                  )}
-                </View>
-              </View>
-            </View>
-          ))
+          <DraggableFlatList
+            data={workout.exercises}
+            onDragEnd={({ data }) => handleDragEnd(data)}
+            keyExtractor={(item) => item.id}
+            renderItem={renderExerciseItem}
+          />
         )}
-      </ScrollView>
+      </View>
 
       <Modal
         visible={showAddModal}
@@ -285,19 +237,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  reorderButton: {
-    backgroundColor: "#F2F2F7",
-    width: 32,
-    height: 32,
-    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -415,5 +354,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#E5E5EA",
+  },
+  exerciseCardDragging: {
+    opacity: 0.8,
+    transform: [{ scale: 1.02 }],
+  },
+  dragHandle: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#F2F2F7",
+    marginRight: 8,
   },
 });
