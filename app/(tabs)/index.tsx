@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Trash2,
   GripVertical,
+  Edit2,
 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
@@ -30,6 +31,8 @@ export default function WorkoutsScreen() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState("");
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+  const [editWorkoutName, setEditWorkoutName] = useState("");
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -65,6 +68,30 @@ export default function WorkoutsScreen() {
     setNewWorkoutName("");
     setShowAddModal(false);
     loadWorkouts();
+  };
+
+  const handleEditWorkout = async () => {
+    if (!editWorkoutName.trim() || !editingWorkout) return;
+
+    const updatedWorkout = {
+      ...editingWorkout,
+      name: editWorkoutName.trim(),
+    };
+
+    await StorageService.updateWorkout(updatedWorkout);
+    setEditWorkoutName("");
+    setEditingWorkout(null);
+    loadWorkouts();
+  };
+
+  const openEditWorkoutModal = (workout: Workout) => {
+    setEditingWorkout(workout);
+    setEditWorkoutName(workout.name);
+  };
+
+  const closeEditModal = () => {
+    setEditingWorkout(null);
+    setEditWorkoutName("");
   };
 
   const handleDeleteWorkout = (workoutId: string) => {
@@ -128,6 +155,12 @@ export default function WorkoutsScreen() {
               </TouchableOpacity>
             </Link>
             <View style={styles.workoutActions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => openEditWorkoutModal(workout)}
+              >
+                <Edit2 size={16} color="#007AFF" strokeWidth={2} />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => handleDeleteWorkout(workout.id)}
@@ -197,6 +230,36 @@ export default function WorkoutsScreen() {
               autoFocus
               returnKeyType="done"
               onSubmitEditing={handleAddWorkout}
+            />
+          </View>
+        </SafeAreaView>
+      </Modal>
+
+      <Modal
+        visible={!!editingWorkout}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={closeEditModal}>
+              <Text style={styles.cancelButton}>Cancel</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Edit Workout</Text>
+            <TouchableOpacity onPress={handleEditWorkout}>
+              <Text style={styles.saveButton}>Save</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalContent}>
+            <Text style={styles.inputLabel}>Workout Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={editWorkoutName}
+              onChangeText={setEditWorkoutName}
+              placeholder="e.g., Shoulders and Chest"
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleEditWorkout}
             />
           </View>
         </SafeAreaView>
@@ -302,6 +365,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 16,
     marginLeft: 8,
+    gap: 8,
   },
   actionButton: {
     padding: 8,
