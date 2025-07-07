@@ -19,6 +19,8 @@ import {
   ChevronRight,
   Trash2,
   GripVertical,
+  Calendar,
+  Edit2,
 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
@@ -30,6 +32,8 @@ export default function WorkoutDetailScreen() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
+  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
+  const [editExerciseName, setEditExerciseName] = useState("");
 
   const loadWorkout = useCallback(async () => {
     const workouts = await StorageService.getWorkouts();
@@ -47,6 +51,7 @@ export default function WorkoutDetailScreen() {
     const newExercise: Exercise = {
       id: Date.now().toString(),
       name: newExerciseName.trim(),
+      date: new Date().toISOString(),
       sets: [],
     };
 
@@ -59,6 +64,35 @@ export default function WorkoutDetailScreen() {
     setNewExerciseName("");
     setShowAddModal(false);
     loadWorkout();
+  };
+
+  const handleEditExercise = async () => {
+    if (!editExerciseName.trim() || !editingExercise || !workout) return;
+
+    const updatedExercise = {
+      ...editingExercise,
+      name: editExerciseName.trim(),
+    };
+
+    await StorageService.updateExercise(workout.id, updatedExercise);
+    setEditExerciseName("");
+    setEditingExercise(null);
+    loadWorkout();
+  };
+
+  const openEditExerciseModal = (exercise: Exercise) => {
+    setEditingExercise(exercise);
+    setEditExerciseName(exercise.name);
+  };
+
+  const closeEditModal = () => {
+    setEditingExercise(null);
+    setEditExerciseName("");
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
   };
 
   const handleDeleteExercise = (exerciseId: string) => {
@@ -114,15 +148,27 @@ export default function WorkoutDetailScreen() {
               <TouchableOpacity style={styles.exerciseContent}>
                 <View style={styles.exerciseInfo}>
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
-                  <Text style={styles.setCount}>
-                    {exercise.sets.length} set
-                    {exercise.sets.length !== 1 ? "s" : ""}
-                  </Text>
+                  <View style={styles.exerciseMeta}>
+                    <Calendar size={14} color="#8E8E93" strokeWidth={2} />
+                    <Text style={styles.exerciseDate}>
+                      {formatDate(exercise.date || new Date().toISOString())}
+                    </Text>
+                    <Text style={styles.setCount}>
+                      {exercise.sets.length} set
+                      {exercise.sets.length !== 1 ? "s" : ""}
+                    </Text>
+                  </View>
                 </View>
                 <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
               </TouchableOpacity>
             </Link>
             <View style={styles.exerciseActions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => openEditExerciseModal(exercise)}
+              >
+                <Edit2 size={16} color="#007AFF" strokeWidth={2} />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => handleDeleteExercise(exercise.id)}
@@ -204,6 +250,36 @@ export default function WorkoutDetailScreen() {
               autoFocus
               returnKeyType="done"
               onSubmitEditing={handleAddExercise}
+            />
+          </View>
+        </SafeAreaView>
+      </Modal>
+
+      <Modal
+        visible={!!editingExercise}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={closeEditModal}>
+              <Text style={styles.cancelButton}>Cancel</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Edit Exercise</Text>
+            <TouchableOpacity onPress={handleEditExercise}>
+              <Text style={styles.saveButton}>Save</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalContent}>
+            <Text style={styles.inputLabel}>Exercise Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={editExerciseName}
+              onChangeText={setEditExerciseName}
+              placeholder="e.g., Seated Barbell Shoulder Press"
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleEditExercise}
             />
           </View>
         </SafeAreaView>
@@ -293,6 +369,15 @@ const styles = StyleSheet.create({
     color: "#000000",
     marginBottom: 4,
   },
+  exerciseMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  exerciseDate: {
+    fontSize: 14,
+    color: "#8E8E93",
+  },
   setCount: {
     fontSize: 14,
     color: "#8E8E93",
@@ -302,6 +387,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 16,
     marginLeft: 8,
+    gap: 8,
   },
   actionButton: {
     padding: 8,

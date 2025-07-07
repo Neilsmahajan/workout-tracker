@@ -107,4 +107,25 @@ export const StorageService = {
       console.error("Error reordering exercises:", error);
     }
   },
+
+  async updateExercise(
+    workoutId: string,
+    updatedExercise: Exercise,
+  ): Promise<void> {
+    try {
+      const workouts = await this.getWorkouts();
+      const workoutIndex = workouts.findIndex((w) => w.id === workoutId);
+      if (workoutIndex !== -1 && workouts[workoutIndex]) {
+        const exerciseIndex = workouts[workoutIndex].exercises.findIndex(
+          (e) => e.id === updatedExercise.id,
+        );
+        if (exerciseIndex !== -1) {
+          workouts[workoutIndex].exercises[exerciseIndex] = updatedExercise;
+          await this.saveWorkouts(workouts);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating exercise:", error);
+    }
+  },
 };
