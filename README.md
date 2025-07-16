@@ -114,13 +114,14 @@ The app uses a simple, efficient data structure:
 interface Workout {
   id: string;
   name: string;
-  date: string;
+  date?: string;
   exercises: Exercise[];
 }
 
 interface Exercise {
   id: string;
   name: string;
+  date?: string;
   sets: WorkoutSet[];
 }
 

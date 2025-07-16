@@ -14,6 +14,6 @@ export interface Exercise {
 export interface Workout {
   id: string;
   name: string;
-  date: string;
+  date?: string;
   exercises: Exercise[];
 }

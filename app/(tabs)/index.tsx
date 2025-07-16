@@ -15,7 +15,6 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import {
   Plus,
-  Calendar,
   ChevronRight,
   Trash2,
   GripVertical,
@@ -60,7 +59,6 @@ export default function WorkoutsScreen() {
     const newWorkout: Workout = {
       id: Date.now().toString(),
       name: newWorkoutName.trim(),
-      date: new Date().toISOString(),
       exercises: [],
     };
 
@@ -117,11 +115,6 @@ export default function WorkoutsScreen() {
     await StorageService.reorderWorkouts(data);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
-
   const renderWorkoutItem = ({
     item: workout,
     drag,
@@ -141,10 +134,6 @@ export default function WorkoutsScreen() {
                 <View style={styles.workoutInfo}>
                   <Text style={styles.workoutName}>{workout.name}</Text>
                   <View style={styles.workoutMeta}>
-                    <Calendar size={14} color="#8E8E93" strokeWidth={2} />
-                    <Text style={styles.workoutDate}>
-                      {formatDate(workout.date)}
-                    </Text>
                     <Text style={styles.exerciseCount}>
                       {workout.exercises.length} exercise
                       {workout.exercises.length !== 1 ? "s" : ""}
@@ -350,11 +339,6 @@ const styles = StyleSheet.create({
   workoutMeta: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  workoutDate: {
-    fontSize: 14,
-    color: "#8E8E93",
   },
   exerciseCount: {
     fontSize: 14,

@@ -19,7 +19,6 @@ import {
   ChevronRight,
   Trash2,
   GripVertical,
-  Calendar,
   Edit2,
 } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
@@ -51,7 +50,6 @@ export default function WorkoutDetailScreen() {
     const newExercise: Exercise = {
       id: Date.now().toString(),
       name: newExerciseName.trim(),
-      date: new Date().toISOString(),
       sets: [],
     };
 
@@ -88,11 +86,6 @@ export default function WorkoutDetailScreen() {
   const closeEditModal = () => {
     setEditingExercise(null);
     setEditExerciseName("");
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
   };
 
   const handleDeleteExercise = (exerciseId: string) => {
@@ -149,10 +142,6 @@ export default function WorkoutDetailScreen() {
                 <View style={styles.exerciseInfo}>
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <View style={styles.exerciseMeta}>
-                    <Calendar size={14} color="#8E8E93" strokeWidth={2} />
-                    <Text style={styles.exerciseDate}>
-                      {formatDate(exercise.date || new Date().toISOString())}
-                    </Text>
                     <Text style={styles.setCount}>
                       {exercise.sets.length} set
                       {exercise.sets.length !== 1 ? "s" : ""}
@@ -372,11 +361,6 @@ const styles = StyleSheet.create({
   exerciseMeta: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  exerciseDate: {
-    fontSize: 14,
-    color: "#8E8E93",
   },
   setCount: {
     fontSize: 14,
