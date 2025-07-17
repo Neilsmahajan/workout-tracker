@@ -5,12 +5,10 @@
   },
   "build": {
     "preview": {
-      "distribution": "internal",
-      "node": "pnpm"
+      "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "node": "pnpm"
+      "autoIncrement": true
     }
   },
   "submit": {
