@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Share } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { User, Trash2, Download, Upload } from "lucide-react-native";
+import { User, Trash2, Download } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
 
@@ -35,7 +35,7 @@ export default function ProfileScreen() {
       } else {
         showAlert("Error", "Failed to export data");
       }
-    } catch (error) {
+    } catch {
       showAlert("Error", "Failed to share data");
     }
   };
