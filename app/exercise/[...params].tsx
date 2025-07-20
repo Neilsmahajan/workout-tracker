@@ -18,7 +18,8 @@ import { useWorkouts } from "@/contexts/WorkoutContext";
 export default function ExerciseDetailScreen() {
   const { params } = useLocalSearchParams<{ params: string[] }>();
   const router = useRouter();
-  const { getWorkout, getExercise, addSet, updateSet, deleteSet } = useWorkouts();
+  const { getWorkout, getExercise, addSet, updateSet, deleteSet } =
+    useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSet, setEditingSet] = useState<WorkoutSet | null>(null);
   const [weight, setWeight] = useState("");
@@ -28,7 +29,8 @@ export default function ExerciseDetailScreen() {
   const exerciseId = params?.[1];
 
   const workout = workoutId ? getWorkout(workoutId) : null;
-  const exercise = workoutId && exerciseId ? getExercise(workoutId, exerciseId) : null;
+  const exercise =
+    workoutId && exerciseId ? getExercise(workoutId, exerciseId) : null;
 
   const handleAddSet = async () => {
     const weightNum = parseFloat(weight);
@@ -46,7 +48,8 @@ export default function ExerciseDetailScreen() {
     const weightNum = parseFloat(weight);
     const repsNum = parseInt(reps, 10);
 
-    if (!weightNum || !repsNum || !workoutId || !exerciseId || !editingSet) return;
+    if (!weightNum || !repsNum || !workoutId || !exerciseId || !editingSet)
+      return;
 
     const updatedSet = {
       ...editingSet,
@@ -136,7 +139,7 @@ export default function ExerciseDetailScreen() {
             {exercise.sets.map((set, index) => (
               <View key={set.id} style={styles.setCard}>
                 <View style={styles.setRow}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.setContent}
                     onPress={() => openEditModal(set)}
                   >

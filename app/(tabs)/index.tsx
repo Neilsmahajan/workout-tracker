@@ -26,7 +26,13 @@ import { DumbbellIcon } from "@/components/DumbbellIcon";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 
 export default function WorkoutsScreen() {
-  const { workouts, addWorkout, updateWorkout, deleteWorkout, reorderWorkouts } = useWorkouts();
+  const {
+    workouts,
+    addWorkout,
+    updateWorkout,
+    deleteWorkout,
+    reorderWorkouts,
+  } = useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState("");
   const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);

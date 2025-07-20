@@ -28,7 +28,13 @@ import { useWorkouts } from "@/contexts/WorkoutContext";
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { getWorkout, addExercise, updateExercise, deleteExercise, reorderExercises } = useWorkouts();
+  const {
+    getWorkout,
+    addExercise,
+    updateExercise,
+    deleteExercise,
+    reorderExercises,
+  } = useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
@@ -112,7 +118,8 @@ export default function WorkoutDetailScreen() {
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <View style={styles.exerciseMeta}>
                     <Text style={styles.setCount}>
-                      {exercise.sets.length} set{exercise.sets.length !== 1 ? 's' : ''}
+                      {exercise.sets.length} set
+                      {exercise.sets.length !== 1 ? "s" : ""}
                     </Text>
                   </View>
                 </View>

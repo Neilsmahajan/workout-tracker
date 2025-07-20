@@ -40,7 +40,7 @@ export const StorageService = {
           workouts,
         },
         null,
-        2
+        2,
       );
     } catch (error) {
       console.error("Error exporting data:", error);
