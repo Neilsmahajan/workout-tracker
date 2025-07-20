@@ -347,6 +347,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
+    paddingRight: 8,
     flex: 1,
   },
   setInfo: {
@@ -366,6 +367,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingRight: 16,
+    paddingLeft: 8,
   },
   actionButton: {
     padding: 8,

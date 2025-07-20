@@ -347,6 +347,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
+    paddingRight: 8,
     flex: 1,
   },
   exerciseInfo: {
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingRight: 16,
-    marginLeft: 8,
+    paddingLeft: 8,
     gap: 8,
   },
   actionButton: {
