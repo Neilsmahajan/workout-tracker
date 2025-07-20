@@ -1,25 +1,24 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  TextInput,
+  StyleSheet,
+  SafeAreaView,
   Modal,
+  TextInput,
+  ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ArrowLeft, Plus, ChevronRight, Trash2 } from "lucide-react-native";
-import { StorageService } from "@/utils/storage";
+import { ArrowLeft, Plus, Edit2, Trash2 } from "lucide-react-native";
+import type { WorkoutSet } from "@/types/workout";
 import { showAlert } from "@/utils/alert";
-import type { Workout, Exercise, WorkoutSet } from "@/types/workout";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 
 export default function ExerciseDetailScreen() {
   const { params } = useLocalSearchParams<{ params: string[] }>();
   const router = useRouter();
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [exercise, setExercise] = useState<Exercise | null>(null);
+  const { getWorkout, getExercise, addSet, updateSet, deleteSet } = useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSet, setEditingSet] = useState<WorkoutSet | null>(null);
   const [weight, setWeight] = useState("");
@@ -28,59 +27,26 @@ export default function ExerciseDetailScreen() {
   const workoutId = params?.[0];
   const exerciseId = params?.[1];
 
-  const loadExercise = useCallback(async () => {
-    if (!workoutId || !exerciseId) return;
-
-    const workouts = await StorageService.getWorkouts();
-    const foundWorkout = workouts.find((w) => w.id === workoutId);
-    const foundExercise = foundWorkout?.exercises.find(
-      (e) => e.id === exerciseId,
-    );
-
-    setWorkout(foundWorkout || null);
-    setExercise(foundExercise || null);
-  }, [workoutId, exerciseId]);
-
-  useEffect(() => {
-    loadExercise();
-  }, [loadExercise]);
+  const workout = workoutId ? getWorkout(workoutId) : null;
+  const exercise = workoutId && exerciseId ? getExercise(workoutId, exerciseId) : null;
 
   const handleAddSet = async () => {
     const weightNum = parseFloat(weight);
     const repsNum = parseInt(reps, 10);
 
-    if (!weightNum || !repsNum || !workout || !exercise) return;
+    if (!weightNum || !repsNum || !workoutId || !exerciseId) return;
 
-    const newSet: WorkoutSet = {
-      id: Date.now().toString(),
-      weight: weightNum,
-      reps: repsNum,
-    };
-
-    const updatedExercise = {
-      ...exercise,
-      sets: [...exercise.sets, newSet],
-    };
-
-    const updatedWorkout = {
-      ...workout,
-      exercises: workout.exercises.map((e) =>
-        e.id === exercise.id ? updatedExercise : e,
-      ),
-    };
-
-    await StorageService.updateWorkout(updatedWorkout);
+    await addSet(workoutId, exerciseId, weightNum, repsNum);
     setWeight("");
     setReps("");
     setShowAddModal(false);
-    loadExercise();
   };
 
   const handleEditSet = async () => {
     const weightNum = parseFloat(weight);
     const repsNum = parseInt(reps, 10);
 
-    if (!weightNum || !repsNum || !workout || !exercise || !editingSet) return;
+    if (!weightNum || !repsNum || !workoutId || !exerciseId || !editingSet) return;
 
     const updatedSet = {
       ...editingSet,
@@ -88,23 +54,10 @@ export default function ExerciseDetailScreen() {
       reps: repsNum,
     };
 
-    const updatedExercise = {
-      ...exercise,
-      sets: exercise.sets.map((s) => (s.id === editingSet.id ? updatedSet : s)),
-    };
-
-    const updatedWorkout = {
-      ...workout,
-      exercises: workout.exercises.map((e) =>
-        e.id === exercise.id ? updatedExercise : e,
-      ),
-    };
-
-    await StorageService.updateWorkout(updatedWorkout);
+    await updateSet(workoutId, exerciseId, updatedSet);
     setWeight("");
     setReps("");
     setEditingSet(null);
-    loadExercise();
   };
 
   const handleDeleteSet = (setId: string) => {
@@ -114,22 +67,8 @@ export default function ExerciseDetailScreen() {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          if (!workout || !exercise) return;
-
-          const updatedExercise = {
-            ...exercise,
-            sets: exercise.sets.filter((s) => s.id !== setId),
-          };
-
-          const updatedWorkout = {
-            ...workout,
-            exercises: workout.exercises.map((e) =>
-              e.id === exercise.id ? updatedExercise : e,
-            ),
-          };
-
-          await StorageService.updateWorkout(updatedWorkout);
-          loadExercise();
+          if (!workoutId || !exerciseId) return;
+          await deleteSet(workoutId, exerciseId, setId);
         },
       },
     ]);
@@ -158,7 +97,13 @@ export default function ExerciseDetailScreen() {
   if (!workout || !exercise) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text>Exercise not found</Text>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#007AFF" strokeWidth={2} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Exercise not found</Text>
+          <View style={{ width: 36 }} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -191,7 +136,7 @@ export default function ExerciseDetailScreen() {
             {exercise.sets.map((set, index) => (
               <View key={set.id} style={styles.setCard}>
                 <View style={styles.setRow}>
-                  <TouchableOpacity
+                  <TouchableOpacity 
                     style={styles.setContent}
                     onPress={() => openEditModal(set)}
                   >
@@ -201,7 +146,7 @@ export default function ExerciseDetailScreen() {
                         {set.weight} lbs × {set.reps} reps
                       </Text>
                     </View>
-                    <ChevronRight size={20} color="#C7C7CC" strokeWidth={2} />
+                    <Edit2 size={16} color="#C7C7CC" strokeWidth={2} />
                   </TouchableOpacity>
                   <View style={styles.setActions}>
                     <TouchableOpacity

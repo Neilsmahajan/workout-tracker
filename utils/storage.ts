@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { Workout, Exercise } from "@/types/workout";
+import type { Workout } from "@/types/workout";
 
 const WORKOUTS_KEY = "workouts";
 const DATA_VERSION_KEY = "data_version";
@@ -40,7 +40,7 @@ export const StorageService = {
           workouts,
         },
         null,
-        2,
+        2
       );
     } catch (error) {
       console.error("Error exporting data:", error);
@@ -69,84 +69,6 @@ export const StorageService = {
     } catch (error) {
       console.error("Error saving workouts:", error);
       throw error;
-    }
-  },
-
-  async addWorkout(workout: Workout): Promise<void> {
-    try {
-      const workouts = await this.getWorkouts();
-      workouts.push(workout);
-      await this.saveWorkouts(workouts);
-    } catch (error) {
-      console.error("Error adding workout:", error);
-    }
-  },
-
-  async updateWorkout(updatedWorkout: Workout): Promise<void> {
-    try {
-      const workouts = await this.getWorkouts();
-      const index = workouts.findIndex((w) => w.id === updatedWorkout.id);
-      if (index !== -1) {
-        workouts[index] = updatedWorkout;
-        await this.saveWorkouts(workouts);
-      }
-    } catch (error) {
-      console.error("Error updating workout:", error);
-    }
-  },
-
-  async deleteWorkout(workoutId: string): Promise<void> {
-    try {
-      const workouts = await this.getWorkouts();
-      const filteredWorkouts = workouts.filter((w) => w.id !== workoutId);
-      await this.saveWorkouts(filteredWorkouts);
-    } catch (error) {
-      console.error("Error deleting workout:", error);
-    }
-  },
-
-  async reorderWorkouts(reorderedWorkouts: Workout[]): Promise<void> {
-    try {
-      await this.saveWorkouts(reorderedWorkouts);
-    } catch (error) {
-      console.error("Error reordering workouts:", error);
-    }
-  },
-
-  async reorderExercises(
-    workoutId: string,
-    reorderedExercises: Exercise[],
-  ): Promise<void> {
-    try {
-      const workouts = await this.getWorkouts();
-      const workoutIndex = workouts.findIndex((w) => w.id === workoutId);
-      if (workoutIndex !== -1 && workouts[workoutIndex]) {
-        workouts[workoutIndex].exercises = reorderedExercises;
-        await this.saveWorkouts(workouts);
-      }
-    } catch (error) {
-      console.error("Error reordering exercises:", error);
-    }
-  },
-
-  async updateExercise(
-    workoutId: string,
-    updatedExercise: Exercise,
-  ): Promise<void> {
-    try {
-      const workouts = await this.getWorkouts();
-      const workoutIndex = workouts.findIndex((w) => w.id === workoutId);
-      if (workoutIndex !== -1 && workouts[workoutIndex]) {
-        const exerciseIndex = workouts[workoutIndex].exercises.findIndex(
-          (e) => e.id === updatedExercise.id,
-        );
-        if (exerciseIndex !== -1) {
-          workouts[workoutIndex].exercises[exerciseIndex] = updatedExercise;
-          await this.saveWorkouts(workouts);
-        }
-      }
-    } catch (error) {
-      console.error("Error updating exercise:", error);
     }
   },
 };

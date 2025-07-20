@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   TextInput,
   Modal,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DraggableFlatList, {
   ScaleDecorator,
@@ -20,52 +19,25 @@ import {
   GripVertical,
   Edit2,
 } from "lucide-react-native";
-import { StorageService } from "@/utils/storage";
 import { showAlert } from "@/utils/alert";
 import type { Workout } from "@/types/workout";
 import { Link } from "expo-router";
 import { DumbbellIcon } from "@/components/DumbbellIcon";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 
 export default function WorkoutsScreen() {
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const { workouts, addWorkout, updateWorkout, deleteWorkout, reorderWorkouts } = useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState("");
   const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
   const [editWorkoutName, setEditWorkoutName] = useState("");
-  const mounted = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  const loadWorkouts = async () => {
-    const savedWorkouts = await StorageService.getWorkouts();
-    if (mounted.current) {
-      setWorkouts(savedWorkouts);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      loadWorkouts();
-    }, []),
-  );
 
   const handleAddWorkout = async () => {
     if (!newWorkoutName.trim()) return;
 
-    const newWorkout: Workout = {
-      id: Date.now().toString(),
-      name: newWorkoutName.trim(),
-      exercises: [],
-    };
-
-    await StorageService.addWorkout(newWorkout);
+    await addWorkout(newWorkoutName);
     setNewWorkoutName("");
     setShowAddModal(false);
-    loadWorkouts();
   };
 
   const handleEditWorkout = async () => {
@@ -76,10 +48,9 @@ export default function WorkoutsScreen() {
       name: editWorkoutName.trim(),
     };
 
-    await StorageService.updateWorkout(updatedWorkout);
+    await updateWorkout(updatedWorkout);
     setEditWorkoutName("");
     setEditingWorkout(null);
-    loadWorkouts();
   };
 
   const openEditWorkoutModal = (workout: Workout) => {
@@ -102,8 +73,7 @@ export default function WorkoutsScreen() {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            await StorageService.deleteWorkout(workoutId);
-            loadWorkouts();
+            await deleteWorkout(workoutId);
           },
         },
       ],
@@ -111,8 +81,7 @@ export default function WorkoutsScreen() {
   };
 
   const handleDragEnd = async (data: Workout[]) => {
-    setWorkouts(data);
-    await StorageService.reorderWorkouts(data);
+    await reorderWorkouts(data);
   };
 
   const renderWorkoutItem = ({

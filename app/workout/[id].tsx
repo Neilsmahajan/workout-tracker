@@ -1,81 +1,60 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
-  TextInput,
+  StyleSheet,
+  SafeAreaView,
   Modal,
+  TextInput,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
+import {
+  ArrowLeft,
+  Plus,
+  GripVertical,
+  ChevronRight,
+  Edit2,
+  Trash2,
+} from "lucide-react-native";
 import DraggableFlatList, {
   ScaleDecorator,
   RenderItemParams,
 } from "react-native-draggable-flatlist";
-import {
-  ArrowLeft,
-  Plus,
-  ChevronRight,
-  Trash2,
-  GripVertical,
-  Edit2,
-} from "lucide-react-native";
-import { StorageService } from "@/utils/storage";
+import type { Exercise } from "@/types/workout";
 import { showAlert } from "@/utils/alert";
-import type { Workout, Exercise } from "@/types/workout";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const [workout, setWorkout] = useState<Workout | null>(null);
+  const { getWorkout, addExercise, updateExercise, deleteExercise, reorderExercises } = useWorkouts();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState("");
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
   const [editExerciseName, setEditExerciseName] = useState("");
 
-  const loadWorkout = useCallback(async () => {
-    const workouts = await StorageService.getWorkouts();
-    const foundWorkout = workouts.find((w) => w.id === id);
-    setWorkout(foundWorkout || null);
-  }, [id]);
-
-  useEffect(() => {
-    loadWorkout();
-  }, [loadWorkout]);
+  const workout = id ? getWorkout(id) : null;
 
   const handleAddExercise = async () => {
-    if (!newExerciseName.trim() || !workout) return;
+    if (!newExerciseName.trim() || !id) return;
 
-    const newExercise: Exercise = {
-      id: Date.now().toString(),
-      name: newExerciseName.trim(),
-      sets: [],
-    };
-
-    const updatedWorkout = {
-      ...workout,
-      exercises: [...workout.exercises, newExercise],
-    };
-
-    await StorageService.updateWorkout(updatedWorkout);
+    await addExercise(id, newExerciseName);
     setNewExerciseName("");
     setShowAddModal(false);
-    loadWorkout();
   };
 
   const handleEditExercise = async () => {
-    if (!editExerciseName.trim() || !editingExercise || !workout) return;
+    if (!editExerciseName.trim() || !editingExercise || !id) return;
 
     const updatedExercise = {
       ...editingExercise,
       name: editExerciseName.trim(),
     };
 
-    await StorageService.updateExercise(workout.id, updatedExercise);
+    await updateExercise(id, updatedExercise);
     setEditExerciseName("");
     setEditingExercise(null);
-    loadWorkout();
   };
 
   const openEditExerciseModal = (exercise: Exercise) => {
@@ -98,13 +77,8 @@ export default function WorkoutDetailScreen() {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            if (!workout) return;
-            const updatedWorkout = {
-              ...workout,
-              exercises: workout.exercises.filter((e) => e.id !== exerciseId),
-            };
-            await StorageService.updateWorkout(updatedWorkout);
-            loadWorkout();
+            if (!id) return;
+            await deleteExercise(id, exerciseId);
           },
         },
       ],
@@ -112,13 +86,8 @@ export default function WorkoutDetailScreen() {
   };
 
   const handleDragEnd = async (data: Exercise[]) => {
-    if (!workout) return;
-    const updatedWorkout = {
-      ...workout,
-      exercises: data,
-    };
-    setWorkout(updatedWorkout);
-    await StorageService.reorderExercises(workout.id, data);
+    if (!id) return;
+    await reorderExercises(id, data);
   };
 
   const renderExerciseItem = ({
@@ -143,8 +112,7 @@ export default function WorkoutDetailScreen() {
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <View style={styles.exerciseMeta}>
                     <Text style={styles.setCount}>
-                      {exercise.sets.length} set
-                      {exercise.sets.length !== 1 ? "s" : ""}
+                      {exercise.sets.length} set{exercise.sets.length !== 1 ? 's' : ''}
                     </Text>
                   </View>
                 </View>
@@ -174,7 +142,13 @@ export default function WorkoutDetailScreen() {
   if (!workout) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text>Workout not found</Text>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#007AFF" strokeWidth={2} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Workout not found</Text>
+          <View style={{ width: 36 }} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -378,11 +352,6 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     backgroundColor: "#F2F2F7",
-  },
-  deleteButton: {
-    padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
