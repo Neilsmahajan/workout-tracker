@@ -10,22 +10,30 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "scheme": "myapp",
+    "scheme": "workouttracker",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "description": "Track your workouts, monitor your progress, and stay motivated on your fitness journey with this modern, offline-first workout tracker.",
+    "primaryColor": "#007AFF",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.neilsmahajan.workouttracker",
+      "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app does not use the camera.",
+        "NSMicrophoneUsageDescription": "This app does not use the microphone.",
+        "NSLocationWhenInUseUsageDescription": "This app does not use location services."
       }
     },
     "android": {
       "package": "com.neilsmahajan.workouttracker",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": []
     },
     "plugins": ["expo-router", "expo-font"],
     "experiments": {
