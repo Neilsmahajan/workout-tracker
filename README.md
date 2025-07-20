@@ -135,7 +135,6 @@ interface WorkoutSet {
 ## 🔧 Available Scripts
 
 - `npm run dev` - Start the development server
-- `npm run build:web` - Build for web deployment
 - `npm run lint` - Run ESLint
 
 ## 📸 Screenshots

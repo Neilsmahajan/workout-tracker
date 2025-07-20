@@ -1,51 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
 import type { Workout, Exercise } from "@/types/workout";
 
 const WORKOUTS_KEY = "workouts";
 const DATA_VERSION_KEY = "data_version";
 const CURRENT_DATA_VERSION = "1.0.0";
 
-// Web-compatible storage wrapper
-const storage = {
-  async getItem(key: string): Promise<string | null> {
-    if (Platform.OS === "web") {
-      try {
-        return localStorage.getItem(key);
-      } catch (error) {
-        console.error("Error accessing localStorage:", error);
-        return null;
-      }
-    }
-    return AsyncStorage.getItem(key);
-  },
-
-  async setItem(key: string, value: string): Promise<void> {
-    if (Platform.OS === "web") {
-      try {
-        localStorage.setItem(key, value);
-        return;
-      } catch (error) {
-        console.error("Error setting localStorage:", error);
-        return;
-      }
-    }
-    return AsyncStorage.setItem(key, value);
-  },
-};
-
 export const StorageService = {
   // Initialize storage and handle data migration
   async initialize(): Promise<void> {
     try {
-      const currentVersion = await storage.getItem(DATA_VERSION_KEY);
+      const currentVersion = await AsyncStorage.getItem(DATA_VERSION_KEY);
       if (!currentVersion) {
         // First time setup
-        await storage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
+        await AsyncStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
       } else if (currentVersion !== CURRENT_DATA_VERSION) {
         // Handle data migration here if needed in future versions
         await this.migrateData(currentVersion, CURRENT_DATA_VERSION);
-        await storage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
+        await AsyncStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
       }
     } catch (error) {
       console.error("Error initializing storage:", error);
@@ -56,17 +27,6 @@ export const StorageService = {
     // Handle data migration between versions
     console.log(`Migrating data from ${fromVersion} to ${toVersion}`);
     // Future migration logic would go here
-  },
-
-  // Get data size for monitoring
-  async getDataSize(): Promise<number> {
-    try {
-      const workoutsJson = await storage.getItem(WORKOUTS_KEY);
-      return workoutsJson ? new Blob([workoutsJson]).size : 0;
-    } catch (error) {
-      console.error("Error calculating data size:", error);
-      return 0;
-    }
   },
 
   // Export data for backup purposes
@@ -88,24 +48,9 @@ export const StorageService = {
     }
   },
 
-  // Import data from backup
-  async importData(jsonData: string): Promise<boolean> {
-    try {
-      const data = JSON.parse(jsonData);
-      if (data.workouts && Array.isArray(data.workouts)) {
-        await this.saveWorkouts(data.workouts);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error("Error importing data:", error);
-      return false;
-    }
-  },
-
   async getWorkouts(): Promise<Workout[]> {
     try {
-      const workoutsJson = await storage.getItem(WORKOUTS_KEY);
+      const workoutsJson = await AsyncStorage.getItem(WORKOUTS_KEY);
       return workoutsJson ? JSON.parse(workoutsJson) : [];
     } catch (error) {
       console.error("Error loading workouts:", error);
@@ -120,32 +65,10 @@ export const StorageService = {
         throw new Error("Workouts must be an array");
       }
 
-      // Create backup before saving
-      const currentData = await storage.getItem(WORKOUTS_KEY);
-      if (currentData) {
-        await storage.setItem(`${WORKOUTS_KEY}_backup`, currentData);
-      }
-
-      await storage.setItem(WORKOUTS_KEY, JSON.stringify(workouts));
+      await AsyncStorage.setItem(WORKOUTS_KEY, JSON.stringify(workouts));
     } catch (error) {
       console.error("Error saving workouts:", error);
-      // Attempt to restore from backup if save failed
-      await this.restoreFromBackup();
       throw error;
-    }
-  },
-
-  async restoreFromBackup(): Promise<boolean> {
-    try {
-      const backupData = await storage.getItem(`${WORKOUTS_KEY}_backup`);
-      if (backupData) {
-        await storage.setItem(WORKOUTS_KEY, backupData);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error("Error restoring from backup:", error);
-      return false;
     }
   },
 
