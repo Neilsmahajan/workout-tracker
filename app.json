@@ -12,7 +12,7 @@
     },
     "scheme": "workouttracker",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "description": "Track your workouts, monitor your progress, and stay motivated on your fitness journey with this modern, offline-first workout tracker.",
     "primaryColor": "#007AFF",
     "ios": {
