@@ -51,7 +51,7 @@ export default function ProfileScreen() {
           <View style={styles.profileIcon}>
             <User size={32} color="#007AFF" strokeWidth={2} />
           </View>
-          <Text style={styles.profileName}>Workout Tracker User</Text>
+          <Text style={styles.profileName}>Repfire User</Text>
           <Text style={styles.profileEmail}>Keep crushing those PRs!</Text>
         </View>
 
@@ -94,7 +94,7 @@ export default function ProfileScreen() {
         <View style={styles.aboutSection}>
           <Text style={styles.sectionTitle}>About</Text>
           <Text style={styles.aboutText}>
-            Workout Tracker helps you log and track your fitness progress. Keep
+            Repfire helps you log and track your fitness progress. Keep
             track of your exercises, sets, reps, and weights all in one place.
           </Text>
           <Text style={styles.versionText}>Version 1.0.0</Text>

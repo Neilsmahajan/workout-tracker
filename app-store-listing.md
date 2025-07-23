@@ -2,15 +2,15 @@
 
 ## App Name
 
-Workout Tracker
+Repfire
 
 ## Subtitle
 
-Track Your Fitness Journey
+Ignite Your Fitness Journey
 
 ## Description
 
-**Transform your fitness routine with Workout Tracker – the ultimate companion for serious lifters and fitness enthusiasts.**
+**Transform your fitness routine with Repfire – the ultimate companion for serious lifters and fitness enthusiasts.**
 
 🏋️‍♂️ **FEATURES:**
 • Create unlimited custom workouts

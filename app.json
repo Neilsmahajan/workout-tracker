@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Workout Tracker",
-    "slug": "workout-tracker",
+    "name": "Repfire",
+    "slug": "repfire",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icons/ios-light.png",
@@ -10,14 +10,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "scheme": "workouttracker",
+    "scheme": "repfire",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "description": "Track your workouts, monitor your progress, and stay motivated on your fitness journey with this modern, offline-first workout tracker.",
     "primaryColor": "#007AFF",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.neilsmahajan.workouttracker",
+      "bundleIdentifier": "com.neilsmahajan.repfire",
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
@@ -32,7 +32,7 @@
       }
     },
     "android": {
-      "package": "com.neilsmahajan.workouttracker",
+      "package": "com.neilsmahajan.repfire",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",

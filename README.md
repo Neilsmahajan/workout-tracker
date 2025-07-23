@@ -1,4 +1,4 @@
-# 💪 Workout Tracker
+# � Repfire
 
 A modern, cross-platform workout tracking mobile app built with React Native and Expo. Track your workouts, monitor your progress, and stay motivated on your fitness journey.
 
@@ -57,7 +57,7 @@ A modern, cross-platform workout tracking mobile app built with React Native and
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/workout-tracker.git
+   git clone https://github.com/Neilsmahajan/workout-tracker.git
    cd workout-tracker
    ```
 
@@ -182,4 +182,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Happy Lifting! 🏋️‍♂️**
 
-_Stay consistent, track your progress, and achieve your fitness goals with Workout Tracker._
+_Stay consistent, track your progress, and achieve your fitness goals with Repfire._

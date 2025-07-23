@@ -1,10 +1,10 @@
-# Privacy Policy for Workout Tracker
+# Privacy Policy for Repfire
 
 **Effective Date:** January 19, 2025
 
 ## Introduction
 
-Workout Tracker ("we," "our," or "us") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.
+Repfire ("we," "our," or "us") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.
 
 ## Information We Collect
 
