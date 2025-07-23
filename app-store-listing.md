@@ -57,4 +57,4 @@ https://github.com/neilsmahajan/workout-tracker
 
 ## Privacy Policy URL
 
-[To be hosted on your website or GitHub Pages]
+https://github.com/Neilsmahajan/workout-tracker/blob/main/privacy-policy.md
