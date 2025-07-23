@@ -33,5 +33,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Android service account
+android-service-account.json
+
 ios
 android

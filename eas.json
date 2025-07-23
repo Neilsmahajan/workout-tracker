@@ -32,8 +32,8 @@
         "appleTeamId": "placeholder"
       },
       "android": {
-        "serviceAccountKeyPath": "path/to/api-key.json",
-        "track": "internal"
+        "serviceAccountKeyPath": "android-service-account.json",
+        "track": "production"
       }
     }
   }
