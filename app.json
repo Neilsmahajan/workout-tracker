@@ -4,9 +4,9 @@
     "slug": "workout-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icons/ios-light.png",
     "splash": {
-      "image": "./assets/images/icon.png",
+      "image": "./assets/icons/splash-icon-dark.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -42,7 +42,7 @@
       "permissions": []
     },
     "plugins": [
-      "expo-router", 
+      "expo-router",
       "expo-font",
       [
         "expo-splash-screen",
