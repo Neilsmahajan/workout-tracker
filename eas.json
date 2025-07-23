@@ -27,9 +27,7 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "neilsmahajan@gmail.com",
-        "ascAppId": "placeholder",
-        "appleTeamId": "placeholder"
+        "appleId": "neilsmahajan@icloud.com"
       },
       "android": {
         "serviceAccountKeyPath": "android-service-account.json",
