@@ -30,8 +30,14 @@
         "appleId": "neilsmahajan@icloud.com"
       },
       "android": {
-        "serviceAccountKeyPath": "android-service-account.json",
+        "serviceAccountKeyPath": "./android-service-account.json",
         "track": "production"
+      }
+    },
+    "internal": {
+      "android": {
+        "serviceAccountKeyPath": "./android-service-account.json",
+        "track": "internal"
       }
     }
   }
