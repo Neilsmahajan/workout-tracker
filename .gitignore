@@ -36,5 +36,8 @@ yarn-error.*
 # Android service account
 android-service-account.json
 
+# App images
+assets/app_images/
+
 ios
 android
