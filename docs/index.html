@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Repfire - Support</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+        padding: 50px 20px;
+        margin-bottom: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+      }
+
+      .app-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px auto;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+
+      .app-icon:hover {
+        transform: scale(1.05);
+      }
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      h2 {
+        color: #667eea;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+
+      h3 {
+        color: #555;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      .support-section {
+        background: white;
+        padding: 35px;
+        margin-bottom: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .support-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .faq-item {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #667eea;
+      }
+
+      .contact-info {
+        background: #e8f4fd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .contact-email {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .contact-email:hover {
+        text-decoration: underline;
+      }
+
+      .feature-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .feature-list li:last-child {
+        border-bottom: none;
+      }
+
+      .feature-list li::before {
+        content: "🏋️‍♂️";
+        margin-right: 10px;
+      }
+
+      .privacy-link {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .privacy-link:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #666;
+        border-top: 1px solid #eee;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 10px;
+        }
+
+        header {
+          padding: 30px 15px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        .support-section {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img
+          src="../assets/icons/ios-light.png"
+          alt="Repfire App Icon"
+          class="app-icon"
+        />
+        <h1>Repfire</h1>
+        <p>Your Personal Workout Tracker - Support Center</p>
+      </header>
+
+      <div class="support-section">
+        <h2>About Repfire</h2>
+        <p>
+          Repfire is a modern, cross-platform workout tracking mobile app built
+          with React Native and Expo. Track your workouts, monitor your
+          progress, and stay motivated on your fitness journey.
+        </p>
+
+        <h3>Key Features</h3>
+        <ul class="feature-list">
+          <li>Create Custom Workouts - Design personalized workout routines</li>
+          <li>
+            Track Sets & Reps - Record weight, reps, and sets for each exercise
+          </li>
+          <li>Workout History - View your complete workout history</li>
+          <li>Progress Monitoring - Track your fitness journey over time</li>
+          <li>Offline-First - All data stored locally on your device</li>
+          <li>Cross-Platform - Works on both iOS and Android</li>
+        </ul>
+      </div>
+
+      <div class="support-section">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+          <h3>How do I create a new workout?</h3>
+          <p>
+            Tap the "+" button on the home screen, enter a workout name, and
+            start adding exercises. You can add multiple exercises and track
+            sets, reps, and weights for each.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Is my data stored securely?</h3>
+          <p>
+            Yes! All your workout data is stored locally on your device using
+            secure storage. We don't collect or store your personal workout
+            information on external servers.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I use Repfire offline?</h3>
+          <p>
+            Absolutely! Repfire works completely offline. All features are
+            available without an internet connection since your data is stored
+            locally.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I delete a workout or exercise?</h3>
+          <p>
+            Navigate to the workout or exercise you want to delete and look for
+            the delete option in the menu. You can also swipe left on list items
+            to reveal delete options.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I export my workout data?</h3>
+          <p>
+            Currently, data export is not available, but this feature is planned
+            for future updates. Your data remains safely stored on your device.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>The app is not working properly. What should I do?</h3>
+          <p>
+            Try closing and reopening the app. If issues persist, try restarting
+            your device. For continued problems, please contact support using
+            the information below.
+          </p>
+        </div>
+      </div>
+
+      <div class="support-section">
+        <h2>Getting Help</h2>
+        <p>
+          If you're experiencing issues with Repfire or have questions that
+          aren't answered above, we're here to help!
+        </p>
+
+        <div class="contact-info">
+          <h3>Contact Support</h3>
+          <p>
+            Email us at:
+            <a href="mailto:neilsmahajan@gmail.com" class="contact-email"
+              >neilsmahajan@gmail.com</a
+            >
+          </p>
+          <p>We typically respond within 24-48 hours.</p>
+        </div>
+
+        <h3>When contacting support, please include:</h3>
+        <ul>
+          <li>Your device type (iPhone/Android)</li>
+          <li>iOS/Android version</li>
+          <li>App version</li>
+          <li>Description of the issue</li>
+          <li>Steps to reproduce the problem</li>
+        </ul>
+      </div>
+
+      <div class="support-section">
+        <h2>Privacy & Terms</h2>
+        <p>
+          Your privacy is important to us. Repfire stores all data locally on
+          your device and does not collect personal information.
+        </p>
+        <p>
+          For detailed information, please review our
+          <a href="./privacy-policy.html" class="privacy-link">Privacy Policy</a
+          >.
+        </p>
+      </div>
+
+      <div class="support-section">
+        <h2>Updates & Feedback</h2>
+        <p>
+          We're constantly working to improve Repfire. Updates are released
+          regularly through the App Store and Google Play Store.
+        </p>
+        <p>
+          Have a feature request or feedback? We'd love to hear from you!
+          Contact us at
+          <a href="mailto:neilsmahajan@gmail.com" class="contact-email"
+            >neilsmahajan@gmail.com</a
+          >
+        </p>
+      </div>
+
+      <footer>
+        <p>&copy; 2025 Neil Mahajan. All rights reserved.</p>
+        <p>
+          Repfire - Stay consistent, track your progress, achieve your goals.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
