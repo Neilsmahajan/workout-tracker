@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Share } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Share, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Trash2, Download } from "lucide-react-native";
 import { StorageService } from "@/utils/storage";
@@ -46,60 +46,62 @@ export default function ProfileScreen() {
         <Text style={styles.title}>Profile</Text>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.profileSection}>
-          <View style={styles.profileIcon}>
-            <User size={32} color="#007AFF" strokeWidth={2} />
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
+          <View style={styles.profileSection}>
+            <View style={styles.profileIcon}>
+              <User size={32} color="#007AFF" strokeWidth={2} />
+            </View>
+            <Text style={styles.profileName}>Repfire User</Text>
+            <Text style={styles.profileEmail}>Keep crushing those PRs!</Text>
           </View>
-          <Text style={styles.profileName}>Repfire User</Text>
-          <Text style={styles.profileEmail}>Keep crushing those PRs!</Text>
+
+          <View style={styles.settingsSection}>
+            <Text style={styles.sectionTitle}>Data Management</Text>
+
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={handleExportData}
+            >
+              <View style={styles.settingIcon}>
+                <Download size={20} color="#007AFF" strokeWidth={2} />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={styles.settingLabel}>Export Data</Text>
+                <Text style={styles.settingDescription}>
+                  Backup your workout data
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={handleClearData}
+            >
+              <View style={styles.settingIcon}>
+                <Trash2 size={20} color="#FF3B30" strokeWidth={2} />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingLabel, { color: "#FF3B30" }]}>
+                  Clear All Data
+                </Text>
+                <Text style={styles.settingDescription}>
+                  Delete all workouts and exercises
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.aboutSection}>
+            <Text style={styles.sectionTitle}>About</Text>
+            <Text style={styles.aboutText}>
+              Repfire helps you log and track your fitness progress. Keep
+              track of your exercises, sets, reps, and weights all in one place.
+            </Text>
+            <Text style={styles.versionText}>Version 1.0.0</Text>
+          </View>
         </View>
-
-        <View style={styles.settingsSection}>
-          <Text style={styles.sectionTitle}>Data Management</Text>
-
-          <TouchableOpacity
-            style={styles.settingItem}
-            onPress={handleExportData}
-          >
-            <View style={styles.settingIcon}>
-              <Download size={20} color="#007AFF" strokeWidth={2} />
-            </View>
-            <View style={styles.settingContent}>
-              <Text style={styles.settingLabel}>Export Data</Text>
-              <Text style={styles.settingDescription}>
-                Backup your workout data
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.settingItem}
-            onPress={handleClearData}
-          >
-            <View style={styles.settingIcon}>
-              <Trash2 size={20} color="#FF3B30" strokeWidth={2} />
-            </View>
-            <View style={styles.settingContent}>
-              <Text style={[styles.settingLabel, { color: "#FF3B30" }]}>
-                Clear All Data
-              </Text>
-              <Text style={styles.settingDescription}>
-                Delete all workouts and exercises
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.aboutSection}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.aboutText}>
-            Repfire helps you log and track your fitness progress. Keep
-            track of your exercises, sets, reps, and weights all in one place.
-          </Text>
-          <Text style={styles.versionText}>Version 1.0.0</Text>
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -121,8 +123,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000000",
   },
-  content: {
+  scrollContainer: {
     flex: 1,
+  },
+  content: {
     padding: 20,
   },
   profileSection: {
