@@ -137,7 +137,17 @@ interface WorkoutSet {
 - `npm run dev` - Start the development server
 - `npm run lint` - Run ESLint
 
-## 📸 Screenshots
+## � Download
+
+**iOS App Store**
+
+- [Download Repfire on the App Store](https://apps.apple.com/us/app/repfire/id6749026161)
+
+**Android Play Store**
+
+- Coming soon! Android version will be available shortly.
+
+## �📸 Screenshots
 
 _Coming soon - screenshots will be added once the app is finalized_
 
